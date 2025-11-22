@@ -2,7 +2,9 @@ package config
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/ariskaAdi/backend-ecommerce/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -21,4 +23,17 @@ func LoadDB() {
 	}
 
 	DB = db 
+}
+
+func RunMigrations() {
+	if DB == nil {
+		log.Fatal("Tidak ada koneksi database")
+	}
+
+    err := DB.AutoMigrate(&model.User{}) 
+    if err != nil {
+        log.Fatal("Gagal migrasi database:", err)
+    }
+
+	log.Println("migrasi berhasil")
 }

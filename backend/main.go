@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ariskaAdi/backend-ecommerce/config"
+	"github.com/ariskaAdi/backend-ecommerce/router"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,14 +12,19 @@ func main() {
 
 	config.LoadConfig()
 	config.LoadDB()
+	config.RunMigrations()
 
-	router := gin.Default()
+	r := gin.Default()
 
-	api := router.Group("/api")
+	api := r.Group("/api")
+
 	api.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
-	router.Run(fmt.Sprintf(":%v", config.ENV.PORT))
+
+	router.AuthRouter(api)
+
+	r.Run(fmt.Sprintf(":%v", config.ENV.PORT))
 }
